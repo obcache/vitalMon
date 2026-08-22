@@ -1,9 +1,17 @@
 {
-  "name": "vitalMon",
+  "name": "vitals-monitor",
+  "productName": "Vitals Monitor",
   "version": "0.1.0",
   "private": false,
   "description": "monitors pc vitals and  upon any abnormal changes, logs and displays them.",
+  "main": "./out/main/main.js",
   "scripts": {
+    "dev": "node tools/run-electron-vite.cjs dev",
+    "build": "tsc --build && electron-vite build",
+    "preview": "node tools/run-electron-vite.cjs preview",
+    "dist": "npm run build && electron-builder",
+    "dist:inno": "npm run build && node tools/build-inno.cjs",
+    "typecheck": "tsc --build --pretty",
     "todo": "node tools/project-mgmt/todo.js list",
     "todo:add": "node tools/project-mgmt/todo.js add",
     "ledger:list": "node tools/project-mgmt/ledger.js list",
@@ -17,5 +25,57 @@
     "commit": "node tools/project-mgmt/commit-release.js patch",
     "commit:minor": "node tools/project-mgmt/commit-release.js minor",
     "commit:major": "node tools/project-mgmt/commit-release.js major"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^5.1.1",
+    "lucide-react": "^0.555.0",
+    "ping": "^1.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "sql.js": "^1.13.0",
+    "systeminformation": "^5.27.11"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/ping": "^0.4.4",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@types/sql.js": "^1.4.11",
+    "electron": "^43.4.1",
+    "electron-builder": "^26.0.12",
+    "electron-vite": "^4.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.4"
+  },
+  "build": {
+    "appId": "com.vitalsmonitor.app",
+    "productName": "Vitals Monitor",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "assets/icons",
+        "to": "assets/icons"
+      },
+      {
+        "from": "node_modules/sql.js/dist/sql-wasm.wasm",
+        "to": "sql.js/sql-wasm.wasm"
+      }
+    ],
+    "win": {
+      "icon": "assets/icons/vitals-monitor.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }

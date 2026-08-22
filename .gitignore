@@ -4,8 +4,11 @@ node_modules/
 .tmp/
 dist/
 build/
+out/
+out-tsc/
 release/
 *.log
+*.tsbuildinfo
 tools/project-mgmt/.codex-bundle/
 tools/project-mgmt/chat-handoffs/
 docs/handoffs/handoff-*.md
