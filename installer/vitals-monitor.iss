@@ -1,6 +1,6 @@
 #define MyAppName "Vitals Monitor"
 #ifndef MyAppVersion
-  #define MyAppVersion "0.1.0"
+  #define MyAppVersion "0.2.1"
 #endif
 #define MyAppExeName "Vitals Monitor.exe"
 #define MyAppId "{{9E6D5D30-A213-4F36-A1BF-8DD95B2F79D6}"
@@ -11,7 +11,7 @@
 [Setup]
 AppId={#MyAppId}
 AppName={#MyAppName}
-AppVersion={#MyAppVersion}
+AppVersion=0.2.1
 AppVerName={#MyAppName} {#MyAppVersion}
 DefaultDirName={commonpf64}\{#MyAppName}
 DefaultGroupName={#MyAppName}

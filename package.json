@@ -1,7 +1,7 @@
 {
   "name": "vitals-monitor",
   "productName": "Vitals Monitor",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "private": false,
   "description": "A free, ad-free Windows system-health dashboard that automatically records abnormal hardware, storage, and network telemetry for visual diagnosis.",
   "main": "./out/main/main.js",
