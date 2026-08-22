@@ -8,7 +8,7 @@
 
 Vitals Monitor is a Windows system-health dashboard that watches hardware, storage, and network telemetry in the background, automatically captures abnormal periods to a local SQLite database, and turns them into dense, exportable timelines for diagnosis.
 
-[Read the user guide](docs/user-guide.html) | [Ad-free support](#free-and-ad-free) | [Build from source](#build-from-source) | [Create an installer](#create-a-windows-installer)
+[Download Installer for Windows x64 (latest)](https://github.com/obcache/vitalMon/releases/latest) | [Read the user guide](docs/user-guide.html) | [Ad-free support](#free-and-ad-free) | [Build from source](#build-from-source) | [Create an installer](#create-a-windows-installer)
 
 ## Why Vitals Monitor
 
