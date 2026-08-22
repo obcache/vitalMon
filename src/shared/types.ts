@@ -124,6 +124,8 @@ export interface VitalsApi {
   addMarker: (message: string) => Promise<DashboardSnapshot>;
   exportRange: (range: ExportRequest) => Promise<{ canceled: boolean; filePath?: string }>;
   importJson: (content: string) => Promise<DashboardSnapshot>;
+  openUserGuide: () => Promise<void>;
+  openSupportSite: () => Promise<void>;
   onSnapshot: (callback: (snapshot: DashboardSnapshot) => void) => () => void;
   window: {
     minimize: () => void;

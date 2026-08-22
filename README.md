@@ -1,74 +1,125 @@
-# vitalMon
+# Vitals Monitor
 
-monitors pc vitals and  upon any abnormal changes, logs and displays them.
+<p align="center">
+  <img src="assets/icons/vitals-monitor.png" alt="Vitals Monitor logo" width="112" height="112">
+</p>
 
-## Project Status
+<p align="center"><strong>See abnormal system behavior as it happens, and keep the evidence that explains it.</strong></p>
 
-- Visibility: Public
-- Version: 0.1.0
-- Created: 2026-08-22
+Vitals Monitor is a Windows system-health dashboard that watches hardware, storage, and network telemetry in the background, automatically captures abnormal periods to a local SQLite database, and turns them into dense, exportable timelines for diagnosis.
 
-## Overview
+[Read the user guide](docs/user-guide.html) | [Ad-free support](#free-and-ad-free) | [Build from source](#build-from-source) | [Create an installer](#create-a-windows-installer)
 
-Vitals Monitor is a Windows system-health dashboard that runs quietly in the system tray. It samples hardware, storage, and network metrics, detects significant changes across a rolling five-sample window, and records abnormal periods to a local SQLite database for later analysis.
+## Why Vitals Monitor
 
-## Features
+Most hardware monitors either show the present moment or record everything indefinitely. Vitals Monitor keeps a lightweight five-sample working set during normal operation, detects meaningful changes and threshold violations, then automatically switches to one-second polling and database logging while the event is active.
 
-- Dense VS Code-dark dashboard with gauges, sparklines, a historical chart, event markers, and collapsible sensor groups.
-- Automatic one-second logging when metrics cross configurable thresholds or change significantly.
-- Manual realtime logging from the dashboard or tray menu, with a distinct logging tray icon.
-- CPU, GPU, motherboard, memory, fan, voltage, disk, latency, and jitter monitoring where exposed by Windows and installed sensor providers.
-- JSON range export and import for comparing captures from other systems.
-- Frameless Electron window with custom titlebar, controls, scrollbars, and in-page pinnable metric popovers.
-- Local SQLite persistence with host, network, and system-build metadata.
+The result is a focused record of the periods that are most useful when diagnosing heat, load, storage, cooling, voltage, or network problems.
 
-## Installation
+## Free And Ad-Free
 
-Build a full Windows installer with Inno Setup 6:
+Vitals Monitor is an independent community project supported by [SorryNeedBoost Studios](https://sorryneedboost.com). It is free to install and use, contains no third-party advertising, and does not interrupt monitoring with sponsored content, promotional gates, or bundled offers.
 
-```powershell
-npm install
-npm run dist:inno
+For a distributable desktop application, that support goes toward product design, engineering, testing, documentation, packaging, distribution, and ongoing maintenance. The model is intentionally straightforward: keep promotion subordinate to the user's workflow and let the product introduce the studio through the quality of the work.
+
+## Highlights
+
+- Dense VS Code-dark dashboard designed for high information density.
+- Automatic realtime logging when a metric becomes abnormal or changes significantly.
+- Manual realtime recording from the dashboard or system-tray menu.
+- CPU, GPU, motherboard, memory, fan, voltage, disk, latency, jitter, and packet-loss telemetry where Windows and installed sensor providers expose it.
+- Historical chart with explicit logging start, stop, and user marker events.
+- Collapsible gauge rails and pinnable five-sample trend popovers.
+- Configurable polling rates, latency target, and warning thresholds.
+- Time-range export to portable JSON and import for analysis on another computer.
+- Local SQLite storage with hostname, IP address, and system-build context.
+- Custom frameless window, dark controls, alternate recording tray icon, and launch-to-tray support.
+
+## Requirements
+
+- 64-bit Windows 10 version 1809 or newer, or Windows 11.
+- Administrator approval during installation.
+- A working network route to the configured latency target for latency, jitter, and packet-loss measurements.
+- Optional: [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor) or [Open Hardware Monitor](https://openhardwaremonitor.org/) with its WMI sensor interface available for broader motherboard temperature, voltage, and fan coverage.
+
+Sensor availability depends on the motherboard, GPU, firmware, drivers, and monitoring interfaces exposed by the machine. An unavailable value is displayed as `N/A`; it is not treated as a warning.
+
+## Install And Start
+
+1. Download the latest `Vitals-Monitor-Setup-<version>-x64.exe` from the repository release.
+2. Run the installer and approve the Windows administrator prompt.
+3. Choose optional desktop and launch-at-startup shortcuts.
+4. Start Vitals Monitor from the Start menu.
+
+The app begins monitoring immediately. Closing the main window sends it to the system tray; it does not stop monitoring. Double-click the tray icon to restore the dashboard, or right-click it for logging, guide, and quit commands.
+
+## How Recording Works
+
+1. Normal monitoring polls every 10 seconds by default and retains the latest five sample sets in memory.
+2. A warning, critical value, or significant five-sample change starts automatic logging.
+3. Polling changes to one second and every metric is written to the local SQLite database.
+4. Automatic logging stops after all monitored values return to normal and the five-sample window stabilizes.
+5. Manual logging continues until you explicitly stop it.
+
+Defaults are editable from **Settings**. Choose **Help** in the app status bar for the complete guide.
+
+## Data And Privacy
+
+Vitals Monitor processes telemetry locally and does not upload collected system data. The database is stored in the current Windows profile under:
+
+```text
+%APPDATA%\Vitals Monitor\data\vitals-monitor.sqlite3
 ```
 
-The installer is written to `release/inno/`. It installs per user, creates a Start menu shortcut, and offers optional desktop and launch-at-startup shortcuts. Startup launches Vitals Monitor directly into the system tray.
+Network quality measurement sends ICMP echo requests to the configured latency target, which defaults to `1.1.1.1`. JSON exports contain the readings, events, hostname, IP address, and system-build information for the selected period; review them before sharing.
 
-## Usage
+## Distribution Description
 
-Run the development build:
+Use this copy for software listings, release pages, and distribution channels:
+
+> Vitals Monitor is a free, ad-free Windows system-health dashboard that watches hardware, storage, and network telemetry in the background, automatically captures abnormal periods to a local SQLite database, and turns them into dense, exportable timelines for diagnosis. It is supported by SorryNeedBoost Studios.
+
+Short listing line:
+
+> Free and ad-free, Vitals Monitor watches Windows hardware, storage, and network health and automatically logs abnormal periods for fast visual diagnosis.
+
+## Build From Source
+
+Prerequisites: Node.js, npm, Git, and Windows.
 
 ```powershell
+git clone <repository-url>
+cd vitalMon
+npm install
 npm run dev
 ```
 
-Closing the window keeps Vitals Monitor running in the tray. Double-click the tray icon to restore it, or right-click for realtime logging and quit controls.
-
-## Development
-
-Project workflow files live under `docs/` and reusable automation lives under `tools/project-mgmt/`.
-
-```powershell
-npm run todo
-npm run ledger:message
-npm run handoff
-npm run version:show
-```
-
-## Testing
+Verification commands:
 
 ```powershell
 npm run typecheck
 npm run build
+npm audit
 ```
 
-## Build And Release
+## Create A Windows Installer
 
-Use `npm run commit -- "message"` for a patch release commit. Use `npm run commit:minor -- "message"` or `npm run commit:major -- "message"` when the change requires a larger version bump.
+Install [Inno Setup 6](https://jrsoftware.org/isinfo.php), then run:
 
-## Contributing
+```powershell
+npm run dist:inno
+```
 
-Document branch, review, commit, and release expectations.
+The finished installer is written to `release/inno/`. The build includes the standalone [HTML user guide](docs/user-guide.html), which can also be published unchanged by a static website.
 
-## License
+## Documentation
 
-Add licensing details before public distribution.
+- [User guide](docs/user-guide.html)
+- [Build guide](docs/developer/build.md)
+- [Deployment guide](docs/developer/deployment.md)
+- [Testing guide](docs/developer/testing.md)
+- [Manual QA](docs/manual-qa.md)
+
+## Version
+
+Current application version: `0.1.0`

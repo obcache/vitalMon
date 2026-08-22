@@ -15,6 +15,7 @@
   --amber: #d7ba7d;
   --orange: #ce9178;
   --red: #f14c4c;
+  --support: #c586f2;
 }
 
 * {
@@ -68,7 +69,7 @@ button {
 .app-shell {
   display: grid;
   height: 100vh;
-  grid-template-rows: 42px 1fr 34px;
+  grid-template-rows: 42px 1fr 40px;
   background: var(--bg);
 }
 
@@ -623,8 +624,8 @@ th {
   font-size: 12px;
 }
 
-.statusbar span,
-.statusbar button {
+.statusbar > span,
+.statusbar > button {
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -634,22 +635,57 @@ th {
 }
 
 .statusbar button {
-  margin-left: auto;
   border-left: 1px solid #343434;
   background: transparent;
 }
 
-.statusbar button + button {
-  margin-left: 0;
+.statusbar .status-first-action {
+  margin-left: auto;
 }
 
 .statusbar button:hover {
   background: #303030;
 }
 
+.statusbar .support-credit {
+  display: grid;
+  width: 182px;
+  min-width: 182px;
+  height: 32px;
+  margin: 3px 5px;
+  padding: 3px 10px 4px;
+  place-content: center;
+  gap: 0;
+  border: 1px solid #9c52c7;
+  background: #29222e;
+  box-shadow: inset 0 0 0 1px rgba(197, 134, 242, 0.08), 0 0 8px rgba(156, 82, 199, 0.18);
+  color: #f3e8ff;
+  text-align: left;
+}
+
+.statusbar .support-credit:hover {
+  border-color: var(--support);
+  background: #34263c;
+  box-shadow: inset 0 0 0 1px rgba(216, 168, 251, 0.14), 0 0 10px rgba(156, 82, 199, 0.32);
+}
+
+.support-credit span {
+  color: #cbb7d9;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 10px;
+  text-transform: uppercase;
+}
+
+.support-credit strong {
+  color: #fff;
+  font-size: 11px;
+  line-height: 13px;
+}
+
 .drawer-backdrop {
   position: fixed;
-  inset: 42px 0 34px;
+  inset: 42px 0 40px;
   z-index: 10;
   display: flex;
   justify-content: flex-end;
@@ -660,6 +696,17 @@ th {
   width: 420px;
   height: 100%;
   background: #252526;
+}
+
+.support-drawer {
+  display: grid;
+  width: min(540px, 48vw);
+  min-width: 480px;
+  height: 100%;
+  grid-template-rows: 62px minmax(0, 1fr) 58px;
+  border-left: 1px solid #563a68;
+  background: #252526;
+  box-shadow: -16px 0 36px rgba(0, 0, 0, 0.3);
 }
 
 .drawer-head {
@@ -674,6 +721,93 @@ th {
 .drawer-head h2 {
   margin: 0;
   font-size: 15px;
+}
+
+.support-head {
+  height: 62px;
+  border-bottom-color: #563a68;
+}
+
+.support-head > div > span,
+.support-section-heading span {
+  display: block;
+  color: #bca7ca;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 14px;
+  text-transform: uppercase;
+}
+
+.support-content {
+  overflow: auto;
+  padding: 12px;
+}
+
+.support-section {
+  padding: 16px;
+  border: 1px solid #414141;
+  background: #212122;
+}
+
+.support-section + .support-section {
+  margin-top: 10px;
+}
+
+.support-section-heading {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 13px;
+}
+
+.support-section-heading > svg {
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border: 1px solid #4c4550;
+  background: #2d2d30;
+  color: var(--green);
+}
+
+.support-section h3 {
+  margin: 0;
+  color: #f0f0f0;
+  font-size: 15px;
+  line-height: 20px;
+}
+
+.support-section p {
+  margin: 0 0 12px;
+  color: #c7c7c7;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.support-section p:last-child {
+  margin-bottom: 0;
+}
+
+.support-actions {
+  justify-content: space-between;
+  height: 58px;
+  border-top-color: #563a68;
+}
+
+.support-actions > span {
+  color: #8f8f8f;
+  font-size: 10px;
+}
+
+.support-actions .support-primary {
+  border-color: #9452ba;
+  background: #31243a;
+  color: #f5eaff;
+}
+
+.support-actions .support-primary:hover {
+  border-color: var(--support);
+  background: #3b2946;
 }
 
 .settings-grid {
@@ -700,6 +834,12 @@ th {
 
 .hidden-file {
   display: none;
+}
+
+@media (max-width: 1500px) {
+  .status-system {
+    display: none !important;
+  }
 }
 
 @media (max-width: 1280px) {

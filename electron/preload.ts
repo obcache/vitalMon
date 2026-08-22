@@ -8,6 +8,8 @@ const api: VitalsApi = {
   addMarker: (message: string) => ipcRenderer.invoke('vitals:addMarker', message),
   exportRange: (range: ExportRequest) => ipcRenderer.invoke('vitals:exportRange', range),
   importJson: (content: string) => ipcRenderer.invoke('vitals:importJson', content),
+  openUserGuide: () => ipcRenderer.invoke('vitals:openUserGuide'),
+  openSupportSite: () => ipcRenderer.invoke('vitals:openSupportSite'),
   onSnapshot: (callback: (snapshot: DashboardSnapshot) => void) => {
     const listener = (_event: Electron.IpcRendererEvent, snapshot: DashboardSnapshot): void => callback(snapshot);
     ipcRenderer.on('vitals:snapshot', listener);

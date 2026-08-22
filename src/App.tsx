@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactElement } from 'react';
 import {
   Activity,
   ChevronDown,
   ChevronRight,
+  CircleHelp,
   Download,
+  ExternalLink,
   Gauge as GaugeIcon,
   Import,
   Maximize2,
@@ -14,6 +16,7 @@ import {
   Power,
   RefreshCw,
   Settings,
+  ShieldCheck,
   Square,
   Upload,
   X
@@ -35,6 +38,7 @@ const categoryOrder: MetricCategory[] = ['cpu', 'gpu', 'motherboard', 'voltage',
 export function App(): ReactElement {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>();
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [supportOpen, setSupportOpen] = useState(false);
   const [settingsDraft, setSettingsDraft] = useState<MonitorSettings>();
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [hoverMetric, setHoverMetric] = useState<string>();
@@ -43,6 +47,7 @@ export function App(): ReactElement {
   const [exportTo, setExportTo] = useState(() => toDatetimeLocal(Date.now()));
   const [markerText, setMarkerText] = useState('Manual marker');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const closeSupport = useCallback(() => setSupportOpen(false), []);
 
   useEffect(() => {
     let disposed = false;
@@ -164,7 +169,19 @@ export function App(): ReactElement {
         />
       </main>
 
-      <StatusBar snapshot={snapshot} onSettings={() => setSettingsOpen(true)} />
+      <StatusBar
+        snapshot={snapshot}
+        onSettings={() => {
+          setSupportOpen(false);
+          setSettingsOpen(true);
+        }}
+        onSupport={() => {
+          setSettingsOpen(false);
+          setSupportOpen(true);
+        }}
+      />
+
+      {supportOpen && <SupportPanel onClose={closeSupport} />}
 
       {settingsOpen && settingsDraft && (
         <SettingsPanel
@@ -502,17 +519,86 @@ function ImportExport({
   );
 }
 
-function StatusBar({ snapshot, onSettings }: { snapshot: DashboardSnapshot; onSettings: () => void }): ReactElement {
+function StatusBar({
+  snapshot,
+  onSettings,
+  onSupport
+}: {
+  snapshot: DashboardSnapshot;
+  onSettings: () => void;
+  onSupport: () => void;
+}): ReactElement {
   return (
     <footer className="statusbar">
       <span><i className={snapshot.state.isLogging ? 'status-light hot' : 'status-light'} /> {snapshot.state.isLogging ? 'Recording' : 'Monitoring'}</span>
       <span>Host {snapshot.system.hostname}</span>
       <span>IP {snapshot.system.ipAddress}</span>
-      <span>{snapshot.system.cpu}</span>
-      <span>{snapshot.system.gpu}</span>
-      <button onClick={onSettings}><Settings size={15} /> Settings</button>
-      <button onClick={() => window.vitals.window.closeToTray()}><Import size={15} /> Tray</button>
+      <span className="status-system">{snapshot.system.cpu}</span>
+      <span className="status-system">{snapshot.system.gpu}</span>
+      <button className="status-action status-first-action" title="Open user guide" onClick={() => void window.vitals.openUserGuide()}><CircleHelp size={15} /> Help</button>
+      <button className="status-action" onClick={onSettings}><Settings size={15} /> Settings</button>
+      <button className="status-action" onClick={() => window.vitals.window.closeToTray()}><Import size={15} /> Tray</button>
+      <button className="support-credit" title="Learn why Vitals Monitor is free and ad-free" onClick={onSupport}>
+        <span>Ad-free support by</span>
+        <strong>SorryNeedBoost Studios</strong>
+      </button>
     </footer>
+  );
+}
+
+function SupportPanel({ onClose }: { onClose: () => void }): ReactElement {
+  useEffect(() => {
+    const closeOnEscape = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [onClose]);
+
+  return (
+    <div className="drawer-backdrop" onMouseDown={(event) => event.target === event.currentTarget && onClose()}>
+      <aside className="support-drawer" role="dialog" aria-modal="true" aria-labelledby="support-title">
+        <div className="drawer-head support-head">
+          <div>
+            <span>Free and ad-free community software</span>
+            <h2 id="support-title">How Vitals Monitor is supported</h2>
+          </div>
+          <button autoFocus title="Close support information" aria-label="Close support information" onClick={onClose}><X size={16} /></button>
+        </div>
+        <div className="support-content">
+          <section className="support-section">
+            <div className="support-section-heading">
+              <ShieldCheck size={18} />
+              <div>
+                <span>Ad-free community project</span>
+                <h3>Useful software, without interruptions</h3>
+              </div>
+            </div>
+            <p>Vitals Monitor is an independent community project supported by SorryNeedBoost Studios. It is free to install and use, contains no third-party advertising, and does not interrupt monitoring with sponsored content, promotional gates, or bundled offers.</p>
+            <p>The studio supports the application because useful, respectful software can demonstrate its values through the quality of the work while keeping commerce out of the user&apos;s task.</p>
+          </section>
+          <section className="support-section">
+            <div className="support-section-heading">
+              <ShieldCheck size={18} />
+              <div>
+                <span>Support model</span>
+                <h3>Why Vitals Monitor remains free and ad-free</h3>
+              </div>
+            </div>
+            <p>For a distributable desktop application, that support goes toward product design, engineering, testing, documentation, packaging, distribution, and ongoing maintenance rather than advertising inventory or promotional placement.</p>
+            <p>The model is intentionally transparent and service-minded: share useful tools openly, keep promotion subordinate to the workflow, and let the product earn trust by being useful. Separate products and services may be commercialized in appropriate contexts; Vitals Monitor itself remains free and ad-free.</p>
+          </section>
+        </div>
+        <div className="drawer-actions support-actions">
+          <span>No purchase or sign-in required</span>
+          <button className="command support-primary" onClick={() => void window.vitals.openSupportSite()}>
+            Visit SorryNeedBoost Studios <ExternalLink size={14} />
+          </button>
+        </div>
+      </aside>
+    </div>
   );
 }
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, Tray } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu, nativeImage, shell, Tray } from 'electron';
 import { MetricsDatabase } from './database';
 import { VitalsMonitor } from './monitor';
 import type { DashboardSnapshot, MonitorSettings } from '../src/shared/types';
@@ -12,11 +12,26 @@ let monitor: VitalsMonitor | undefined;
 let quitting = false;
 const hasSingleInstanceLock = app.requestSingleInstanceLock();
 const startHidden = process.argv.includes('--hidden');
+const supportSiteUrl = 'https://sorryneedboost.com';
 
 function iconPath(file: string): string {
   return app.isPackaged
     ? path.join(process.resourcesPath, 'assets', 'icons', file)
     : path.join(process.cwd(), 'assets', 'icons', file);
+}
+
+function userGuidePath(): string {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'docs', 'user-guide.html')
+    : path.join(process.cwd(), 'docs', 'user-guide.html');
+}
+
+async function openUserGuide(): Promise<void> {
+  const guidePath = userGuidePath();
+  const error = await shell.openPath(guidePath);
+  if (error) {
+    dialog.showErrorBox('Unable to open the user guide', `${error}\n\nExpected file: ${guidePath}`);
+  }
 }
 
 function getTrayImage(logging: boolean): Electron.NativeImage {
@@ -86,6 +101,7 @@ function rebuildTrayMenu(snapshot?: DashboardSnapshot): void {
         void monitor?.setManualLogging(!(snapshot?.state.isLogging && snapshot.state.loggingMode === 'manual'));
       }
     },
+    { label: 'User Guide', click: () => void openUserGuide() },
     { type: 'separator' },
     {
       label: 'Quit',
@@ -170,6 +186,8 @@ ipcMain.handle('vitals:setSettings', (_event, settings: MonitorSettings) => moni
 ipcMain.handle('vitals:setManualLogging', (_event, enabled: boolean) => monitor?.setManualLogging(enabled));
 ipcMain.handle('vitals:addMarker', (_event, message: string) => monitor?.addMarker(message));
 ipcMain.handle('vitals:importJson', (_event, content: string) => monitor?.importJson(content));
+ipcMain.handle('vitals:openUserGuide', () => openUserGuide());
+ipcMain.handle('vitals:openSupportSite', () => shell.openExternal(supportSiteUrl));
 ipcMain.handle('vitals:exportRange', async (_event, range: { from: number; to: number }) => {
   if (!monitor) {
     return { canceled: true };

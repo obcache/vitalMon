@@ -3,7 +3,7 @@
   "productName": "Vitals Monitor",
   "version": "0.1.0",
   "private": false,
-  "description": "monitors pc vitals and  upon any abnormal changes, logs and displays them.",
+  "description": "A free, ad-free Windows system-health dashboard that automatically records abnormal hardware, storage, and network telemetry for visual diagnosis.",
   "main": "./out/main/main.js",
   "scripts": {
     "dev": "node tools/run-electron-vite.cjs dev",
@@ -61,6 +61,10 @@
       {
         "from": "assets/icons",
         "to": "assets/icons"
+      },
+      {
+        "from": "docs/user-guide.html",
+        "to": "docs/user-guide.html"
       },
       {
         "from": "node_modules/sql.js/dist/sql-wasm.wasm",

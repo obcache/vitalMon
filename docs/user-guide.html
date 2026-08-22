@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Complete user guide for Vitals Monitor, a Windows system-health dashboard and automatic telemetry recorder.">
+  <title>Vitals Monitor User Guide</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #1e1e1e;
+      --chrome: #18191a;
+      --panel: #252526;
+      --panel-2: #2d2d30;
+      --border: #3c3c3c;
+      --border-strong: #505050;
+      --text: #d4d4d4;
+      --text-strong: #f3f3f3;
+      --muted: #9a9a9a;
+      --cyan: #4fc1ff;
+      --green: #4ec94e;
+      --amber: #d7ba7d;
+      --orange: #ce9178;
+      --red: #f14c4c;
+      --rail: 276px;
+      font-family: "Segoe UI", Inter, system-ui, sans-serif;
+      font-size: 16px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 72px; }
+    body { margin: 0; background: var(--bg); line-height: 1.65; }
+    a { color: var(--cyan); text-underline-offset: 3px; }
+    a:hover { color: #8dd8ff; }
+    button, a { touch-action: manipulation; }
+    :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+
+    ::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track { background: #1b1b1c; }
+    ::-webkit-scrollbar-thumb { border: 2px solid #1b1b1c; background: #454545; }
+    ::-webkit-scrollbar-thumb:hover { background: #5a5a5a; }
+
+    .skip-link {
+      position: fixed;
+      top: 8px;
+      left: 8px;
+      z-index: 100;
+      transform: translateY(-150%);
+      padding: 8px 12px;
+      background: var(--cyan);
+      color: #111;
+      font-weight: 700;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 20;
+      display: flex;
+      height: 52px;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #111;
+      background: linear-gradient(180deg, #202123, #161718);
+      box-shadow: inset 0 -1px 0 var(--border);
+    }
+    .brand {
+      display: inline-flex;
+      height: 100%;
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
+      color: var(--text-strong);
+      text-decoration: none;
+    }
+    .brand-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border: 1px solid #31566b;
+      background: #1d2a30;
+      color: var(--cyan);
+    }
+    .brand-mark svg { width: 20px; height: 20px; }
+    .brand strong { font-size: 14px; }
+    .brand span { color: var(--muted); font-size: 12px; }
+    .top-status {
+      display: inline-flex;
+      height: 100%;
+      align-items: center;
+      gap: 8px;
+      padding: 0 18px;
+      border-left: 1px solid var(--border);
+      color: #b9b9b9;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .status-light {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(78, 201, 78, .55);
+    }
+
+    .layout { display: grid; min-height: 100vh; grid-template-columns: var(--rail) minmax(0, 1fr); padding-top: 52px; }
+    .toc {
+      position: fixed;
+      inset: 52px auto 0 0;
+      width: var(--rail);
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      background: #202020;
+    }
+    .toc-title {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      margin: 0;
+      padding: 13px 16px 10px;
+      border-bottom: 1px solid var(--border);
+      background: #202020;
+      color: #e7e7e7;
+      font-size: 11px;
+      text-transform: uppercase;
+    }
+    .toc ol { margin: 0; padding: 8px 0 24px; list-style: none; counter-reset: guide; }
+    .toc li { counter-increment: guide; }
+    .toc a {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 3px;
+      padding: 6px 14px;
+      border-left: 2px solid transparent;
+      color: #bcbcbc;
+      font-size: 13px;
+      line-height: 1.35;
+      text-decoration: none;
+    }
+    .toc a::before { content: counter(guide, decimal-leading-zero); color: #6f6f6f; font: 11px Consolas, monospace; }
+    .toc a:hover { border-left-color: var(--cyan); background: #2a2d2e; color: #fff; }
+
+    main { grid-column: 2; min-width: 0; }
+    .hero {
+      min-height: 440px;
+      display: grid;
+      align-content: center;
+      border-bottom: 1px solid var(--border);
+      background:
+        linear-gradient(rgba(79, 193, 255, .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(79, 193, 255, .07) 1px, transparent 1px),
+        #17191a;
+      background-size: 48px 48px;
+    }
+    .hero-inner, .content { width: min(1080px, calc(100% - 64px)); margin: 0 auto; }
+    .hero h1 { max-width: 760px; margin: 0 0 18px; color: #fff; font-size: clamp(38px, 5vw, 66px); line-height: 1.04; font-weight: 650; }
+    .hero .lede { max-width: 820px; margin: 0; color: #c8c8c8; font-size: 20px; line-height: 1.6; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 0; margin-top: 34px; border: 1px solid var(--border); background: rgba(30, 30, 30, .92); }
+    .hero-meta span { padding: 9px 14px; border-right: 1px solid var(--border); color: #aaa; font: 12px Consolas, monospace; }
+
+    .content { padding: 24px 0 80px; }
+    .guide-section { scroll-margin-top: 68px; padding: 56px 0; border-bottom: 1px solid var(--border); }
+    .guide-section:last-child { border-bottom: 0; }
+    .section-number { color: var(--cyan); font: 12px Consolas, monospace; }
+    h2 { margin: 5px 0 18px; color: var(--text-strong); font-size: 30px; line-height: 1.2; font-weight: 600; }
+    h3 { margin: 34px 0 10px; color: #ececec; font-size: 19px; line-height: 1.35; }
+    h4 { margin: 26px 0 8px; color: #ddd; font-size: 15px; }
+    p { max-width: 860px; margin: 0 0 16px; }
+    ul, ol { max-width: 900px; padding-left: 24px; }
+    li + li { margin-top: 7px; }
+    strong { color: #efefef; }
+    code, kbd { font-family: Consolas, "Cascadia Code", monospace; }
+    code { color: #dcdcaa; }
+    kbd { padding: 2px 6px; border: 1px solid var(--border-strong); border-bottom-width: 2px; background: var(--panel-2); color: #fff; font-size: 12px; }
+
+    .callout { max-width: 920px; margin: 24px 0; padding: 16px 18px; border-left: 3px solid var(--cyan); background: #20272b; }
+    .callout.warning { border-left-color: var(--amber); background: #2a2821; }
+    .callout.danger { border-left-color: var(--red); background: #2c2222; }
+    .callout strong { display: block; margin-bottom: 4px; }
+    .callout p:last-child { margin-bottom: 0; }
+
+    .copy-block { max-width: 920px; margin: 22px 0; border: 1px solid var(--border); background: #171717; }
+    .copy-label { padding: 7px 12px; border-bottom: 1px solid var(--border); color: var(--muted); font: 11px Consolas, monospace; text-transform: uppercase; }
+    .copy-block blockquote { margin: 0; padding: 18px 20px; color: #eee; font-size: 17px; }
+
+    .support-block { max-width: 920px; margin: 18px 0; padding: 18px; border: 1px solid var(--border); background: #222; }
+    .support-kicker { display: block; margin-bottom: 3px; color: #bca7ca; font: 11px Consolas, monospace; text-transform: uppercase; }
+    .support-block h3 { margin: 0 0 12px; }
+    .studio-link {
+      display: inline-grid;
+      margin-top: 12px;
+      padding: 7px 14px;
+      border: 1px solid #9c52c7;
+      background: #29222e;
+      box-shadow: inset 0 0 0 1px rgba(197, 134, 242, .08), 0 0 8px rgba(156, 82, 199, .18);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .studio-link:hover { border-color: #d8a8fb; background: #34263c; color: #fff; }
+
+    .flow { display: grid; max-width: 980px; grid-template-columns: repeat(4, 1fr); margin: 26px 0; border: 1px solid var(--border); }
+    .flow-step { position: relative; min-height: 142px; padding: 16px; border-right: 1px solid var(--border); background: var(--panel); }
+    .flow-step:last-child { border-right: 0; }
+    .flow-step b { display: block; margin-bottom: 8px; color: var(--cyan); font: 12px Consolas, monospace; }
+    .flow-step strong { display: block; margin-bottom: 6px; font-size: 14px; }
+    .flow-step span { color: #aaa; font-size: 13px; line-height: 1.45; }
+
+    .state-list { display: grid; max-width: 920px; grid-template-columns: 150px 1fr; margin: 22px 0; border: 1px solid var(--border); }
+    .state-list dt, .state-list dd { margin: 0; padding: 11px 14px; border-bottom: 1px solid #353535; }
+    .state-list dt { display: flex; align-items: center; gap: 8px; background: #202020; font-weight: 700; }
+    .state-list dd { color: #bbb; }
+    .state-list dt:last-of-type, .state-list dd:last-of-type { border-bottom: 0; }
+    .swatch { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+    .swatch.warning { background: var(--amber); }
+    .swatch.critical { background: var(--red); }
+    .swatch.unavailable { background: #777; }
+
+    .table-wrap { max-width: 100%; margin: 22px 0; overflow-x: auto; border: 1px solid var(--border); }
+    table { width: 100%; min-width: 680px; border-collapse: collapse; background: #222; font-size: 13px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid #363636; text-align: left; vertical-align: top; }
+    th { background: #2d2d30; color: #aaa; font-size: 10px; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    td:first-child { color: #eee; font-weight: 600; }
+
+    details { max-width: 920px; border-bottom: 1px solid var(--border); background: #222; }
+    details:first-of-type { border-top: 1px solid var(--border); }
+    summary { padding: 13px 16px; color: #eee; font-weight: 600; cursor: pointer; }
+    summary:hover { background: #2a2d2e; }
+    details > div { padding: 2px 16px 16px; color: #bbb; }
+    details p:last-child { margin-bottom: 0; }
+
+    .index-grid { columns: 3 220px; max-width: 920px; margin-top: 22px; padding: 0; list-style: none; }
+    .index-grid li { break-inside: avoid; margin: 0 0 7px; }
+    .index-grid a { font-size: 14px; }
+
+    .page-footer { padding: 22px 32px; border-top: 1px solid #111; background: #202020; color: #888; font-size: 12px; text-align: center; }
+    .back-top { display: inline-block; margin-top: 22px; font-size: 13px; }
+
+    @media (max-width: 900px) {
+      :root { --rail: 0px; }
+      .topbar { position: static; }
+      .top-status { display: none; }
+      .brand span { display: none; }
+      .layout { display: block; padding-top: 0; }
+      .toc { position: static; width: auto; max-height: none; border-right: 0; border-bottom: 1px solid var(--border); }
+      .toc-title { position: static; }
+      .toc ol { columns: 2 220px; padding: 8px; }
+      .toc li { break-inside: avoid; }
+      main { display: block; }
+      .hero { min-height: 390px; }
+      .hero-inner, .content { width: min(100% - 36px, 1080px); }
+      .hero h1 { font-size: 42px; }
+      .hero .lede { font-size: 18px; }
+      .flow { grid-template-columns: 1fr 1fr; }
+      .flow-step { border-bottom: 1px solid var(--border); }
+      .flow-step:nth-child(2) { border-right: 0; }
+      .flow-step:nth-last-child(-n+2) { border-bottom: 0; }
+      .index-grid { columns: 2 200px; }
+    }
+
+    @media (max-width: 560px) {
+      .brand { padding: 0 12px; }
+      .toc ol, .index-grid { columns: 1; }
+      .hero { min-height: 420px; }
+      .hero h1 { font-size: 36px; }
+      .hero .lede { font-size: 16px; }
+      .hero-meta span { width: 50%; border-bottom: 1px solid var(--border); }
+      .guide-section { padding: 42px 0; }
+      h2 { font-size: 27px; }
+      .flow { grid-template-columns: 1fr; }
+      .flow-step, .flow-step:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--border); }
+      .flow-step:nth-last-child(2) { border-bottom: 1px solid var(--border); }
+      .state-list { grid-template-columns: 1fr; }
+      .state-list dt { border-bottom: 0; }
+    }
+
+    @media print {
+      :root { color-scheme: light; --bg: #fff; --text: #222; --text-strong: #000; --border: #bbb; }
+      .topbar, .toc, .back-top { display: none; }
+      .layout, main { display: block; padding: 0; }
+      .hero { min-height: auto; padding: 32px 0; background: #fff; }
+      .hero .lede, p, li, td, dd { color: #222; }
+      .content { width: 100%; padding: 0; }
+      .guide-section { padding: 28px 0; break-inside: avoid; }
+      .callout, .copy-block, .flow-step, .state-list, table, details { background: #fff; }
+      a { color: #005a9c; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to guide</a>
+  <header class="topbar" id="top">
+    <a class="brand" href="#introduction" aria-label="Vitals Monitor user guide home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12h4l2.5-7 5 14 2.5-7h4" />
+        </svg>
+      </span>
+      <strong>Vitals Monitor</strong>
+      <span>User Guide</span>
+    </a>
+    <div class="top-status"><i class="status-light"></i> Guide 0.1.0</div>
+  </header>
+
+  <div class="layout">
+    <nav class="toc" aria-label="Table of contents">
+      <h2 class="toc-title">Table of contents</h2>
+      <ol>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#support-model">Free and ad-free support</a></li>
+        <li><a href="#requirements">Requirements</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#first-run">First run</a></li>
+        <li><a href="#monitoring">How monitoring works</a></li>
+        <li><a href="#dashboard">Dashboard reference</a></li>
+        <li><a href="#logging">Logging modes</a></li>
+        <li><a href="#settings">Settings and defaults</a></li>
+        <li><a href="#markers">Event markers</a></li>
+        <li><a href="#data-transfer">Export and import</a></li>
+        <li><a href="#tray">Tray and window behavior</a></li>
+        <li><a href="#sensors">Sensor coverage</a></li>
+        <li><a href="#data-privacy">Data and privacy</a></li>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>
+        <li><a href="#faq">Frequently asked questions</a></li>
+        <li><a href="#index">Topic index</a></li>
+      </ol>
+    </nav>
+
+    <main id="main-content">
+      <section class="hero" id="guide-home">
+        <div class="hero-inner">
+          <h1>Vitals Monitor User Guide</h1>
+          <p class="lede">Vitals Monitor is a free, ad-free Windows system-health dashboard that watches hardware, storage, and network telemetry in the background, automatically captures abnormal periods to a local SQLite database, and turns them into dense, exportable timelines for diagnosis.</p>
+          <div class="hero-meta" aria-label="Guide information">
+            <span>Version 0.1.0</span>
+            <span>Windows x64</span>
+            <span>Local-first telemetry</span>
+            <span>Updated August 2026</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="content">
+        <section class="guide-section" id="introduction">
+          <span class="section-number">01 / INTRODUCTION</span>
+          <h2>What Vitals Monitor does</h2>
+          <p>Vitals Monitor stays active in the Windows system tray and samples the health signals exposed by your computer. During normal operation it uses a low-overhead polling interval and keeps only the latest five sample sets in working memory. When it detects a warning, a critical value, or a significant change, it moves to realtime polling and records the complete metric set to a local database.</p>
+          <p>This event-focused approach is intended to preserve the useful context around intermittent heat, load, cooling, storage, voltage, and network problems without requiring continuous high-frequency recording.</p>
+
+          <h3>Copy-ready distribution description</h3>
+          <p>The following description is the canonical introduction for release pages, application directories, package managers, and other distribution channels.</p>
+          <div class="copy-block">
+            <div class="copy-label">Full description</div>
+            <blockquote>Vitals Monitor is a free, ad-free Windows system-health dashboard that watches hardware, storage, and network telemetry in the background, automatically captures abnormal periods to a local SQLite database, and turns them into dense, exportable timelines for diagnosis. It is supported by SorryNeedBoost Studios.</blockquote>
+          </div>
+          <div class="copy-block">
+            <div class="copy-label">Short listing line</div>
+            <blockquote>Free and ad-free, Vitals Monitor watches Windows hardware, storage, and network health and automatically logs abnormal periods for fast visual diagnosis.</blockquote>
+          </div>
+
+          <h3>Core capabilities</h3>
+          <ul>
+            <li>Monitor CPU, GPU, motherboard, memory, fan, voltage, disk, latency, jitter, and packet-loss values where the machine exposes them.</li>
+            <li>Detect threshold violations and meaningful movement across a rolling five-sample window.</li>
+            <li>Record all metrics at a one-second interval during automatic or manual logging.</li>
+            <li>Review database readings on a dense timeline with explicit start, stop, and marker events.</li>
+            <li>Export selected time periods to JSON and import compatible captures from other computers.</li>
+          </ul>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="support-model">
+          <span class="section-number">02 / SUPPORT MODEL</span>
+          <h2>How Vitals Monitor is supported</h2>
+          <div class="support-block">
+            <span class="support-kicker">Ad-free community project</span>
+            <h3>Useful software, without interruptions</h3>
+            <p>Vitals Monitor is an independent community project supported by SorryNeedBoost Studios. It is free to install and use, contains no third-party advertising, and does not interrupt monitoring with sponsored content, promotional gates, or bundled offers.</p>
+            <p>SorryNeedBoost Studios supports the application because useful, respectful software can demonstrate its values through the quality of the work while keeping commerce out of the user's task.</p>
+          </div>
+          <div class="support-block">
+            <span class="support-kicker">Support model</span>
+            <h3>Why Vitals Monitor remains free and ad-free</h3>
+            <p>For a distributable desktop application, that support goes toward product design, engineering, testing, documentation, packaging, distribution, and ongoing maintenance rather than advertising inventory or promotional placement.</p>
+            <p>The model is intentionally transparent and service-minded: share useful tools openly, keep promotion subordinate to the workflow, and let the product earn trust by being useful. Separate products and services may be commercialized in appropriate contexts; Vitals Monitor itself remains free and ad-free.</p>
+            <a class="studio-link" href="https://sorryneedboost.com" target="_blank" rel="noopener noreferrer">Visit SorryNeedBoost Studios</a>
+          </div>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="requirements">
+          <span class="section-number">03 / REQUIREMENTS</span>
+          <h2>System requirements</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Requirement</th><th>Minimum or recommendation</th></tr></thead>
+              <tbody>
+                <tr><td>Operating system</td><td>64-bit Windows 10 version 1809 or newer, or Windows 11.</td></tr>
+                <tr><td>Installation</td><td>Administrator approval is required by the standard installer.</td></tr>
+                <tr><td>Network monitoring</td><td>ICMP echo access to the configured latency target. The default target is <code>1.1.1.1</code>.</td></tr>
+                <tr><td>Hardware sensors</td><td>Supported firmware, drivers, and Windows sensor interfaces. Coverage varies by machine.</td></tr>
+                <tr><td>Extended sensor coverage</td><td>Optional LibreHardwareMonitor or Open Hardware Monitor WMI sensor exposure for additional motherboard, fan, and voltage values.</td></tr>
+                <tr><td>Display</td><td>A desktop resolution of at least 1180 by 720 is recommended for the dense dashboard.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout warning">
+            <strong>Sensor availability is hardware-dependent.</strong>
+            <p>Vitals Monitor can display only values exposed by Windows, device drivers, firmware, and supported sensor providers. A missing value appears as <code>N/A</code> and is not considered a fault.</p>
+          </div>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="installation">
+          <span class="section-number">04 / INSTALLATION</span>
+          <h2>Install, update, or remove the app</h2>
+          <h3>Install</h3>
+          <ol>
+            <li>Download <code>Vitals-Monitor-Setup-&lt;version&gt;-x64.exe</code> from the official release location.</li>
+            <li>Run the installer and approve the Windows administrator prompt.</li>
+            <li>Review the destination folder. The default is <code>C:\Program Files\Vitals Monitor</code>.</li>
+            <li>Choose whether to create a desktop shortcut and whether Vitals Monitor should start with Windows.</li>
+            <li>Complete setup and launch Vitals Monitor.</li>
+          </ol>
+          <p>The Start menu contains shortcuts for both the application and this user guide. When the startup option is selected, Vitals Monitor launches directly into the system tray without opening the dashboard.</p>
+
+          <h3>Update</h3>
+          <p>Exit Vitals Monitor from its tray menu, then run the newer installer. The stable application identifier allows Inno Setup to update the existing installation. User settings and the telemetry database live in the Windows profile and remain separate from installed program files.</p>
+
+          <h3>Uninstall</h3>
+          <p>Open <strong>Settings &gt; Apps &gt; Installed apps</strong>, locate <strong>Vitals Monitor</strong>, and choose <strong>Uninstall</strong>. Uninstalling program files does not automatically remove the telemetry database from your Windows profile.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="first-run">
+          <span class="section-number">05 / FIRST RUN</span>
+          <h2>What to expect on first launch</h2>
+          <ol>
+            <li>Vitals Monitor identifies the hostname, primary IP address, operating system, CPU, motherboard, GPU, and installed memory.</li>
+            <li>The first telemetry sample is collected before the dashboard opens.</li>
+            <li>The next four normal-interval samples populate the rolling five-sample history used for change detection.</li>
+            <li>Available gauges appear in category rails around the timeline. Unsupported values appear as unavailable or are omitted.</li>
+          </ol>
+          <p>The status bar shows the active mode, host identity, system summary, and direct controls for <strong>Help</strong>, <strong>Settings</strong>, and <strong>Tray</strong>.</p>
+
+          <h3>Reading metric states</h3>
+          <dl class="state-list">
+            <dt><i class="swatch"></i> Normal</dt><dd>The value is available and below its configured warning threshold.</dd>
+            <dt><i class="swatch warning"></i> Warning</dt><dd>The value reached a warning threshold or changed significantly across the five-sample window.</dd>
+            <dt><i class="swatch critical"></i> Critical</dt><dd>The value reached its configured critical threshold.</dd>
+            <dt><i class="swatch unavailable"></i> Unavailable</dt><dd>The metric is not exposed by the current hardware or sensor interface. It does not trigger logging.</dd>
+          </dl>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="monitoring">
+          <span class="section-number">06 / MONITORING</span>
+          <h2>How automatic monitoring works</h2>
+          <div class="flow" aria-label="Automatic monitoring sequence">
+            <div class="flow-step"><b>01</b><strong>Monitor</strong><span>Poll every 10 seconds by default and keep the latest five sets in memory.</span></div>
+            <div class="flow-step"><b>02</b><strong>Detect</strong><span>Evaluate thresholds and significant movement across the five-set window.</span></div>
+            <div class="flow-step"><b>03</b><strong>Record</strong><span>Switch to one-second polling and write complete sets to SQLite.</span></div>
+            <div class="flow-step"><b>04</b><strong>Stabilize</strong><span>Stop automatic logging after five sets contain only normal or unavailable values.</span></div>
+          </div>
+
+          <h3>Significant-change detection</h3>
+          <p>Change detection begins when four previous values and the current value are available for the same metric. A change must meet both the configured percentage threshold and a unit-specific minimum movement. The defaults are 15 percent plus at least 4&deg;C for temperature, 15 ms for latency, 300 RPM for fan speed, or one unit for other metric types.</p>
+          <p>A metric that passes this test is marked as a warning even when it remains below its ordinary warning threshold. That warning can start automatic logging.</p>
+
+          <h3>Stabilization</h3>
+          <p>Automatic logging does not stop as soon as one reading returns to normal. The entire rolling window must contain five sample sets in which every metric is normal or unavailable. Manual logging uses a different rule and continues until you stop it.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="dashboard">
+          <span class="section-number">07 / DASHBOARD</span>
+          <h2>Dashboard reference</h2>
+          <h3>Gauge rails</h3>
+          <p>The left rail focuses on CPU, motherboard, voltage, and memory metrics. The right rail focuses on GPU, fan, disk, and network metrics. Select a category header to collapse or expand it.</p>
+          <p>Hover over a gauge to open a five-sample trend popover. Select the gauge to pin that popover; select it again or use the unpin control to dismiss it.</p>
+
+          <h3>Timeline</h3>
+          <p>The central chart uses database readings when logged data exists. Before any readings are recorded, it displays the current in-memory sample history. Colored vertical lines identify logging <strong>START</strong>, <strong>STOP</strong>, and user <strong>MARKER</strong> events.</p>
+
+          <h3>Toolbar</h3>
+          <ul>
+            <li><strong>Resolution</strong> reports the active polling mode and interval.</li>
+            <li><strong>Manual Logging</strong> starts a manual realtime recording session. While a manual session is active, the command changes to <strong>Stop Logging</strong>.</li>
+            <li><strong>Marker</strong> adds the text from the adjacent field to the event history.</li>
+          </ul>
+
+          <h3>Lower panels</h3>
+          <ul>
+            <li><strong>Events</strong> lists start, stop, marker, warning, information, and import events.</li>
+            <li><strong>Sensors</strong> lists current values, states, and warning or critical thresholds.</li>
+            <li><strong>Archive</strong> selects a date and time range for JSON export or loads a prior Vitals Monitor JSON export.</li>
+          </ul>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="logging">
+          <span class="section-number">08 / LOGGING</span>
+          <h2>Automatic and manual logging</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Mode</th><th>How it starts</th><th>Polling</th><th>How it stops</th></tr></thead>
+              <tbody>
+                <tr><td>Monitoring only</td><td>Default state after launch or automatic stabilization.</td><td>Configured normal interval, 10 seconds by default.</td><td>Changes to logging when a trigger is detected or the user starts a manual session.</td></tr>
+                <tr><td>Automatic logging</td><td>A warning, critical value, or significant change is detected.</td><td>Configured realtime interval, one second by default.</td><td>All values are clear and the full five-sample window is stable.</td></tr>
+                <tr><td>Manual logging</td><td>The user selects Manual Logging in the dashboard or Start Realtime Logging in the tray menu.</td><td>Configured realtime interval.</td><td>Only when the user explicitly stops manual logging.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The title bar status, status bar, toolbar, and tray icon all reflect the current recording state. The logging tray icon is visually distinct from the normal monitoring icon.</p>
+          <div class="callout">
+            <strong>Manual sessions never auto-stop.</strong>
+            <p>A manual recording continues even after every metric returns to normal. Stop it from the dashboard or tray menu when the period you want to capture is complete.</p>
+          </div>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="settings">
+          <span class="section-number">09 / SETTINGS</span>
+          <h2>Settings and default thresholds</h2>
+          <p>Select <strong>Settings</strong> in the bottom status bar. Edit the required fields, then choose <strong>Apply</strong>. Settings are saved to the local database and restored on the next launch.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Setting</th><th>Default</th><th>Purpose</th></tr></thead>
+              <tbody>
+                <tr><td>Default polling</td><td>10,000 ms</td><td>Normal monitoring interval. The application enforces a minimum of 2,000 ms.</td></tr>
+                <tr><td>Realtime polling</td><td>1,000 ms</td><td>Interval used while logging. The application enforces a minimum of 500 ms.</td></tr>
+                <tr><td>Latency target</td><td><code>1.1.1.1</code></td><td>Host used for latency, jitter, and packet-loss measurements.</td></tr>
+                <tr><td>CPU temperature</td><td>85 / 95&deg;C</td><td>Warning and critical package/core temperature thresholds.</td></tr>
+                <tr><td>GPU temperature</td><td>83 / 90&deg;C</td><td>Warning and critical GPU temperature thresholds.</td></tr>
+                <tr><td>Motherboard temperature</td><td>70 / 85&deg;C</td><td>Warning and critical thresholds for exposed motherboard temperature sensors.</td></tr>
+                <tr><td>Disk used</td><td>85 / 95%</td><td>Warning and critical used-space thresholds for each mounted drive.</td></tr>
+                <tr><td>Latency</td><td>120 / 250 ms</td><td>Warning and critical round-trip latency thresholds.</td></tr>
+                <tr><td>Jitter</td><td>30 / 75 ms</td><td>Warning and critical variation thresholds across recent latency results.</td></tr>
+                <tr><td>Minimum fan speed</td><td>400 RPM</td><td>Warns when an exposed, active fan reports a nonzero speed below this value.</td></tr>
+                <tr><td>Voltage drift</td><td>7%</td><td>Reference threshold for exposed voltage variation.</td></tr>
+                <tr><td>Significant change</td><td>15%</td><td>Percentage movement required in addition to the unit-specific minimum.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout warning">
+            <strong>Thresholds are general defaults, not hardware specifications.</strong>
+            <p>Review the safe operating limits published by your CPU, GPU, motherboard, storage, and cooling manufacturers before tightening or relaxing thresholds.</p>
+          </div>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="markers">
+          <span class="section-number">10 / MARKERS</span>
+          <h2>Add event markers</h2>
+          <p>Markers associate a timestamped note with the event timeline. Use them to record actions such as starting a benchmark, launching a game, changing a fan profile, reconnecting a cable, or reproducing a fault.</p>
+          <ol>
+            <li>Enter a concise note in the toolbar marker field.</li>
+            <li>Select <strong>Marker</strong>.</li>
+            <li>The note appears in the Events table and as a marker line on the timeline.</li>
+          </ol>
+          <p>You can add markers while monitoring or logging. During an active session, the marker is associated with that recording session.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="data-transfer">
+          <span class="section-number">11 / EXPORT AND IMPORT</span>
+          <h2>Move a capture between computers</h2>
+          <h3>Export a time range</h3>
+          <ol>
+            <li>In the Archive panel, choose the <strong>From</strong> and <strong>To</strong> date and time.</li>
+            <li>Select <strong>Export JSON</strong>.</li>
+            <li>Choose a destination and filename in the Windows save dialog.</li>
+          </ol>
+          <p>The export uses the schema identifier <code>vitals-monitor.export.v1</code> and contains readings and events inside the selected range.</p>
+
+          <h3>Import a capture</h3>
+          <ol>
+            <li>Select <strong>Load JSON</strong>.</li>
+            <li>Choose a JSON file previously created by Vitals Monitor.</li>
+            <li>Imported readings and events are added to the local database and become available in the dashboard.</li>
+          </ol>
+          <div class="callout warning">
+            <strong>Exports can identify a computer.</strong>
+            <p>Reading records include hostname, IP address, system-build information, timestamps, metrics, and logging reasons. Review exported JSON before sending it to another person or publishing it.</p>
+          </div>
+          <p>Import only trusted files. Unsupported schema identifiers are rejected, but an import appends records and is not intended as an undoable preview operation.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="tray">
+          <span class="section-number">12 / SYSTEM TRAY</span>
+          <h2>Tray and window behavior</h2>
+          <ul>
+            <li>Closing the custom window hides it to the tray. Monitoring continues.</li>
+            <li>Double-click the tray icon to restore and focus the dashboard.</li>
+            <li>Right-click the tray icon to show the app, start or stop manual realtime logging, open this guide, or quit.</li>
+            <li>Select <strong>Tray</strong> in the status bar to hide the dashboard without stopping the monitor.</li>
+            <li>Select <strong>Quit</strong> from the tray menu to stop monitoring and close the database cleanly.</li>
+          </ul>
+          <p>If Vitals Monitor is configured to start with Windows, it uses hidden launch mode and remains in the tray until you open it. Starting the application again focuses the existing instance instead of creating a second monitor.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="sensors">
+          <span class="section-number">13 / SENSOR COVERAGE</span>
+          <h2>Understand sensor availability</h2>
+          <p>Vitals Monitor combines standard Windows and driver data with optional hardware-monitor WMI providers. Standard sources commonly provide CPU load, memory use, drive use, GPU information, and network test results. Temperature, voltage, and fan access varies more widely.</p>
+
+          <h3>Extended motherboard, voltage, and fan values</h3>
+          <p>On Windows, Vitals Monitor checks the WMI namespaces used by LibreHardwareMonitor and Open Hardware Monitor. If either provider exposes <code>Temperature</code>, <code>Voltage</code>, or <code>Fan</code> sensors, those values are added to the dashboard.</p>
+          <ol>
+            <li>Install and run a trusted release of LibreHardwareMonitor or Open Hardware Monitor.</li>
+            <li>Enable its WMI sensor interface if the provider requires an explicit setting.</li>
+            <li>Restart Vitals Monitor so the next collection cycle can discover the sensors.</li>
+          </ol>
+
+          <h3>Network values</h3>
+          <p>Latency is the round-trip time to the configured target. Jitter is the standard deviation across up to five recent successful latency results. Packet loss is the percentage reported by the ping operation. A target that blocks ICMP may produce unavailable results even when ordinary web access works.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="data-privacy">
+          <span class="section-number">14 / DATA AND PRIVACY</span>
+          <h2>Where data lives</h2>
+          <p>Vitals Monitor processes telemetry locally. It does not upload system readings or send them to an application service.</p>
+          <div class="copy-block">
+            <div class="copy-label">Default database location</div>
+            <blockquote><code>%APPDATA%\Vitals Monitor\data\vitals-monitor.sqlite3</code></blockquote>
+          </div>
+          <p>The SQLite database stores settings, metric readings, event history, session identifiers, hostname, IP address, and system-build context. Current releases do not automatically prune old logged readings.</p>
+          <p>The only routine external network activity created by monitoring is the ICMP echo request sent to the configured latency target. The default target is Cloudflare's <code>1.1.1.1</code>.</p>
+
+          <h3>Back up or reset local data</h3>
+          <p>Quit Vitals Monitor before copying, moving, or deleting the database. Copy the SQLite file to back up all local readings and settings. Deleting it resets local history and settings the next time the application starts; this action cannot be undone unless you have a backup.</p>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="troubleshooting">
+          <span class="section-number">15 / TROUBLESHOOTING</span>
+          <h2>Common problems</h2>
+          <details>
+            <summary>The main window disappeared after I closed it</summary>
+            <div><p>This is expected. Closing the window hides Vitals Monitor to the system tray so monitoring can continue. Double-click its tray icon to restore the dashboard. Use <strong>Quit</strong> in the tray menu when you want to stop the application.</p></div>
+          </details>
+          <details>
+            <summary>Temperatures, fan speeds, or voltages show N/A</summary>
+            <div><p>The hardware or driver may not expose that sensor through Windows. Run LibreHardwareMonitor or Open Hardware Monitor with WMI sensor access enabled, then restart Vitals Monitor. Some systems still restrict specific embedded-controller values.</p></div>
+          </details>
+          <details>
+            <summary>Latency is unavailable or always critical</summary>
+            <div><p>Confirm that the configured target responds to ICMP echo requests from your network. Corporate firewalls, VPNs, and some routers block ping. Choose a stable target appropriate for your network in Settings and test again.</p></div>
+          </details>
+          <details>
+            <summary>Logging starts immediately after launch</summary>
+            <div><p>At least one first-run metric has crossed a warning threshold. Check the Sensors table and Event history for the triggering label. High drive use, CPU load, temperature, or unusual network measurements are common causes. Adjust a threshold only after confirming the value is expected and safe for that system.</p></div>
+          </details>
+          <details>
+            <summary>Automatic logging does not stop</summary>
+            <div><p>Every available metric must remain clear across the full five-sample window. Review the Sensors table for warning or critical values. If the mode is manual, automatic stabilization does not apply; choose <strong>Stop Logging</strong> yourself.</p></div>
+          </details>
+          <details>
+            <summary>A JSON file will not import</summary>
+            <div><p>Only files with the <code>vitals-monitor.export.v1</code> schema are accepted. Confirm the file was created by Vitals Monitor and was not edited, truncated, or converted by another tool.</p></div>
+          </details>
+          <details>
+            <summary>The user guide will not open from the app</summary>
+            <div><p>Confirm the installed file exists at <code>resources\docs\user-guide.html</code> under the Vitals Monitor installation directory and that Windows has a default application associated with HTML files. Reinstalling restores the packaged guide.</p></div>
+          </details>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="faq">
+          <span class="section-number">16 / FAQ</span>
+          <h2>Frequently asked questions</h2>
+          <details>
+            <summary>Does Vitals Monitor need to stay open on the desktop?</summary>
+            <div><p>No. It is designed to remain in the system tray. Hiding the dashboard does not interrupt polling or logging.</p></div>
+          </details>
+          <details>
+            <summary>Does the application record continuously?</summary>
+            <div><p>No. Normal monitoring retains five sets in memory. Database recording begins automatically for abnormal activity or manually when requested.</p></div>
+          </details>
+          <details>
+            <summary>Can I force continuous one-second recording?</summary>
+            <div><p>Yes. Start manual logging and leave it active. Manual mode continues until explicitly stopped and can grow the local database quickly over long periods.</p></div>
+          </details>
+          <details>
+            <summary>Can I analyze a capture from another computer?</summary>
+            <div><p>Yes. Export the required period to JSON on the source computer, transfer the file securely, and load it from the Archive panel on the analysis computer.</p></div>
+          </details>
+          <details>
+            <summary>Does Vitals Monitor send telemetry to a cloud service?</summary>
+            <div><p>No. Collected telemetry remains in the local SQLite database. Network quality monitoring pings only the latency target configured in Settings.</p></div>
+          </details>
+          <details>
+            <summary>Why do I see fewer sensors than another computer?</summary>
+            <div><p>Sensor exposure differs by motherboard, firmware, GPU driver, embedded controller, and monitoring provider. This is expected and does not indicate an installation failure.</p></div>
+          </details>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+
+        <section class="guide-section" id="index">
+          <span class="section-number">17 / INDEX</span>
+          <h2>Topic index</h2>
+          <ul class="index-grid">
+            <li><a href="#logging">Automatic logging</a></li>
+            <li><a href="#data-privacy">Backup database</a></li>
+            <li><a href="#dashboard">Chart and timeline</a></li>
+            <li><a href="#monitoring">Change detection</a></li>
+            <li><a href="#tray">Close to tray</a></li>
+            <li><a href="#settings">Critical thresholds</a></li>
+            <li><a href="#data-privacy">Database location</a></li>
+            <li><a href="#settings">Default values</a></li>
+            <li><a href="#introduction">Distribution description</a></li>
+            <li><a href="#support-model">Free and ad-free support</a></li>
+            <li><a href="#dashboard">Events table</a></li>
+            <li><a href="#data-transfer">Export JSON</a></li>
+            <li><a href="#sensors">Fan sensors</a></li>
+            <li><a href="#first-run">First launch</a></li>
+            <li><a href="#dashboard">Gauge popovers</a></li>
+            <li><a href="#sensors">Hardware providers</a></li>
+            <li><a href="#data-transfer">Import JSON</a></li>
+            <li><a href="#installation">Install and update</a></li>
+            <li><a href="#sensors">Jitter</a></li>
+            <li><a href="#sensors">Latency</a></li>
+            <li><a href="#settings">Latency target</a></li>
+            <li><a href="#logging">Logging icon</a></li>
+            <li><a href="#markers">Markers</a></li>
+            <li><a href="#logging">Manual logging</a></li>
+            <li><a href="#monitoring">Monitoring cycle</a></li>
+            <li><a href="#data-privacy">Network privacy</a></li>
+            <li><a href="#sensors">Packet loss</a></li>
+            <li><a href="#settings">Polling interval</a></li>
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#data-privacy">Reset local data</a></li>
+            <li><a href="#sensors">Sensor availability</a></li>
+            <li><a href="#settings">Settings</a></li>
+            <li><a href="#support-model">SorryNeedBoost Studios</a></li>
+            <li><a href="#monitoring">Stabilization</a></li>
+            <li><a href="#tray">Start with Windows</a></li>
+            <li><a href="#tray">System tray</a></li>
+            <li><a href="#troubleshooting">Troubleshooting</a></li>
+            <li><a href="#installation">Uninstall</a></li>
+            <li><a href="#sensors">Voltage sensors</a></li>
+            <li><a href="#settings">Warning thresholds</a></li>
+          </ul>
+          <a class="back-top" href="#top">Back to top</a>
+        </section>
+      </div>
+      <footer class="page-footer">Vitals Monitor 0.1.0 &middot; User Guide &middot; Local system telemetry for Windows</footer>
+    </main>
+  </div>
+</body>
+</html>
