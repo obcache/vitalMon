@@ -1,0 +1,21 @@
+{
+  "name": "vitalMon",
+  "version": "0.1.0",
+  "private": false,
+  "description": "monitors pc vitals and  upon any abnormal changes, logs and displays them.",
+  "scripts": {
+    "todo": "node tools/project-mgmt/todo.js list",
+    "todo:add": "node tools/project-mgmt/todo.js add",
+    "ledger:list": "node tools/project-mgmt/ledger.js list",
+    "ledger:message": "node tools/project-mgmt/ledger.js message",
+    "handoff": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/project-mgmt/handoff.ps1",
+    "version:show": "node tools/project-mgmt/version-show.js",
+    "version:sync": "node tools/project-mgmt/version-sync.js",
+    "version:bump:patch": "node tools/project-mgmt/version-bump.js patch",
+    "version:bump:minor": "node tools/project-mgmt/version-bump.js minor",
+    "version:bump:major": "node tools/project-mgmt/version-bump.js major",
+    "commit": "node tools/project-mgmt/commit-release.js patch",
+    "commit:minor": "node tools/project-mgmt/commit-release.js minor",
+    "commit:major": "node tools/project-mgmt/commit-release.js major"
+  }
+}

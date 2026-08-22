@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.*
+.tmp/
+dist/
+build/
+release/
+*.log
+tools/project-mgmt/.codex-bundle/
+tools/project-mgmt/chat-handoffs/
+docs/handoffs/handoff-*.md

@@ -1,0 +1,33 @@
+{
+  "generator": "reponator",
+  "generatorVersion": "0.1.0",
+  "generatedAt": "2026-08-22T01:08:27.299Z",
+  "project": {
+    "name": "vitalMon",
+    "description": "monitors pc vitals and  upon any abnormal changes, logs and displays them.",
+    "private": false
+  },
+  "layout": {
+    "docs": [
+      "README.md",
+      "docs/dev-ledger.md",
+      "docs/planning/To-do.md",
+      "docs/user/UserGuide.md",
+      "docs/developer/build.md",
+      "docs/developer/deployment.md",
+      "docs/developer/testing.md",
+      "docs/developer/handoff.md",
+      "docs/developer/versioning.md",
+      "docs/manual-qa.md"
+    ],
+    "tools": [
+      "tools/project-mgmt/ledger.js",
+      "tools/project-mgmt/todo.js",
+      "tools/project-mgmt/handoff.ps1",
+      "tools/project-mgmt/version-show.js",
+      "tools/project-mgmt/version-sync.js",
+      "tools/project-mgmt/version-bump.js",
+      "tools/project-mgmt/commit-release.js"
+    ]
+  }
+}
