@@ -60,7 +60,7 @@ The app begins monitoring immediately. Closing the main window sends it to the s
 3. Polling changes to one second and every metric is written to the local SQLite database.
 4. Automatic logging stops after all monitored values return to normal and the five-sample window stabilizes.
 5. Manual logging continues until you explicitly stop it.
-
+                                                                                                          
 Defaults are editable from **Settings**. Choose **Help** in the app status bar for the complete guide.
 
 ## Data And Privacy

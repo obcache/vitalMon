@@ -24,7 +24,10 @@
     "version:bump:major": "node tools/project-mgmt/version-bump.js major",
     "commit": "node tools/project-mgmt/commit-release.js patch",
     "commit:minor": "node tools/project-mgmt/commit-release.js minor",
-    "commit:major": "node tools/project-mgmt/commit-release.js major"
+    "commit:major": "node tools/project-mgmt/commit-release.js major",
+    "render-svg:lucide-react": "node tools/render-lucide-png.mjs",
+    "render-svg:lucide-react:list": "node tools/render-lucide-png.mjs list",
+    "render-svg:lucide-react:all": "node tools/render-lucide-png.mjs all"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^5.1.1",
@@ -44,6 +47,7 @@
     "electron": "^43.4.1",
     "electron-builder": "^26.0.12",
     "electron-vite": "^4.0.0",
+    "sharp": "^0.34.5",
     "typescript": "^5.9.3",
     "vite": "^7.2.4"
   },
