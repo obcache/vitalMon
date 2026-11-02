@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="assets/icons/vitals-monitor.png" alt="Vitals Monitor logo" width="112" height="112">
+  <img src="assets/vitals%20monitor%20-%20ss.png" alt="Vitals Monitor Screenshot" width="100%">
 </p>
 
 <p align="center"><strong>See abnormal system behavior as it happens, and keep the evidence that explains it.</strong></p>
